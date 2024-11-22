@@ -6,9 +6,12 @@
 public class Controller2048 {
 
     private final Board2048 board;
+    private final Leaderboard leaderboard;
 
     public Controller2048(Board2048 board) {
         this.board = board;
+        // TODO I hardcoded this leaderboard name for now, this could be changed if necessary
+        this.leaderboard = new Leaderboard("leaderboard.txt");
     }
 
     public int getTileAt(int x, int y) {
@@ -25,6 +28,9 @@ public class Controller2048 {
     }
 
     public int getSize() {
+        /**
+         * @return the size of the board
+         */
         return board.size();
     }
 
@@ -40,6 +46,15 @@ public class Controller2048 {
             board.down();
         else if (direction == Direction.RIGHT)
             board.right();
+    }
+
+    public void saveScore(int score) {
+        /**
+         * Adds a score to the leaderboard and updates the corresponding text file
+         * @param score - score to be saved
+         */
+        leaderboard.addScore(score);
+        leaderboard.save();
     }
 
     public boolean isOver() {

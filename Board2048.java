@@ -26,6 +26,9 @@ public class Board2048 {
 	}
 
 	public int size() {
+		/**
+		 * @return the size of the board
+		 */
 		return grid.length;
 	}
 

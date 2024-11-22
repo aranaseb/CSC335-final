@@ -25,6 +25,8 @@ public class Leaderboard {
         /**
          * Reads an existing stored leaderboard
          *
+         * @param filename - the name of the file to read from and store to
+         *
          * @pre the file passed contains integers on each line, sorted with the
          * highest integer at the top, and the lowest at the bottom
          */
@@ -33,24 +35,30 @@ public class Leaderboard {
 
         Scanner file;
 
+        // Disgusting try catch block which looks for a file and creates it if it doesn't exist
+        // If anyone knows a better way to do this, it would be appreciated
         try {
             file = new Scanner(new File(filename));
         } catch (FileNotFoundException e) {
-            System.out.println("File was not found!");
-            return;
+
+            try {
+                Files.createFile(Paths.get(filename));
+            } catch (IOException ex) {
+                System.out.println("This shouldn't be able to happen...");
+                return;
+            }
+
+            try {
+                file = new Scanner(new File(filename));
+            } catch (FileNotFoundException ex) {
+                System.out.println("This shouldn't be able to happen...");
+                return;
+            }
         }
 
         while (file.hasNextInt()) {
             scores.add(file.nextInt());
         }
-    }
-
-    public Leaderboard() {
-        /**
-         * Creates a leaderboard if one didn't exist previously
-         */
-        scores = new ArrayList<Integer>();
-        filename = "leaderboard.txt";
     }
 
     public void addScore(int score) {
