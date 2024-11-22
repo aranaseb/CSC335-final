@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
 
+import javax.naming.ldap.Control;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,6 +18,7 @@ import javax.swing.SwingConstants;
 
 public class GUI {
 	private static Board2048 theBoard;
+	private static Controller2048 theController;
 
 	private static JFrame window = new JFrame("2048");
 	private static final int WINDOW_SIZE = 980;
@@ -65,12 +67,16 @@ public class GUI {
 
 		int size = requestSize();
 
-		theBoard = new Board2048(size);
+		theController = new Controller2048(new Board2048(size));
 
 		boardView.setLayout(new GridLayout(size, size, SPACING / 2, SPACING / 2));
 
-		for (int[] row : theBoard.getGrid()) {
-			for (int tile : row) {
+		int tile;
+
+		for (int i = 0; i < theController.getSize(); i++) {
+			for (int j = 0; j < theController.getSize(); j++) {
+				tile = theController.getTileAt(i, j);
+
 				JLabel cell = new JLabel(" ", SwingConstants.CENTER) {
 					@Override
 					protected void paintComponent(Graphics g) {

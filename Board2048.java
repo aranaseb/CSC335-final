@@ -15,6 +15,20 @@ public class Board2048 {
 		return grid;  // escaping reference
 	}
 
+	public int get(int i, int j) {
+		/**
+		 * @param i
+		 * @param j
+		 *
+		 * @return the entry at the (i, j) position
+		 */
+		return grid[i][j];
+	}
+
+	public int size() {
+		return grid.length;
+	}
+
 	private void initializeTile(int i, int j){
 		// initializes tile at [i,j]
 		Random r = new Random();
