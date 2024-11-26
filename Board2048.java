@@ -19,7 +19,6 @@ public class Board2048 {
 		score = 0;
 		empty = new ArrayList<int[]>();
 		setup();
-
 		// runTest();
 	}
 
