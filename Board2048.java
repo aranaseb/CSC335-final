@@ -1,8 +1,5 @@
 /**
  * NOTES:
- * 			- merging has not been implemented yet!!!!! mostly just moves UDLR
- * 				 - so I also don't know whether or not the merging logic that 
- * 				   already exists in this file works or not (bc can't merge yet)
  * 			- There's a lot of repeated/duplicate code; I'll combine them
  * 			  when I'm confident with the game logic/later on after it actually
  * 			  fully works.
@@ -23,24 +20,31 @@ public class Board2048 {
 		empty = new ArrayList<int[]>();
 		setup();
 
-		// testing:
-		// System.out.println(toString());
-		// down();
-		// System.out.println(toString());
-		// right();
-		// System.out.println(toString());
-		// left();
-		// System.out.println(toString());
-		// up();
-		// System.out.println(toString());
-		// down();
-		// System.out.println(toString());
-		// right();
-		// System.out.println(toString());
-		// up();
-		// System.out.println(toString());
-		// left();
-		// System.out.println(toString());
+		// runTest();
+	}
+
+	/**
+	 * DELETE THIS FUNC LATER!!
+	 */
+	private void runTest(){
+		System.out.println(toString());
+		down();
+		System.out.println(toString());
+		right();
+		System.out.println(toString());
+		left();
+		System.out.println(toString());
+		up();
+		System.out.println(toString());
+
+		down();
+		System.out.println(toString());
+		right();
+		System.out.println(toString());
+		up();
+		System.out.println(toString());
+		left();
+		System.out.println(toString());
 	}
 
 	/**
@@ -120,41 +124,35 @@ public class Board2048 {
 		
 		mi = 0;
 		mj = 0;
-		
-		// if (dir == UP){
-		// 	mi = i+1;
-		// 	mj = j;
-		// } else if (dir == DOWN) {
-		// 	mi = i-1;
-		// 	mj = j;
-		// } else if (dir == LEFT) {
-		// 	mi = i;
-		// 	mj = j+1;
-		// } else {  // dir == RIGHT
-		// 	mi = i;
-		// 	mj = j-1;
-		// }
 
-		// /*
-		// Merge procedure:
-		// 	0. assert [i,j]==[mi,mj]
-		// 	1. combine the tiles into a new tile in spot [i,j]
-		// 	2. remove the merged tile from the grid
-		// 	3. add the merged space to the zeros
-		// 			- IN THE LOGIC FOR MOVING IT OVER, MAKE SURE THAT IT REMOVES/ADDS
-		// 			  THE ZEROS THERE AS NECESSARY TO EMPTY
-		// */
-		// // 0. assert [i,j]==[mi,mj]
-		// assert (grid[mi][mj]==grid[i][j]);  // Should NEVER be different values
-		// // 1. combine the tiles into a new tile in spot [i,j]
-		// grid[i][j] = 2*grid[i][j];
-		// // 2. remove the merged tile from the grid
-		// grid[mi][mj] = 0;
-		// // 3. add the merged space to the zeros
-		
+		assert (dir != null);  // this shouldn't happen
 
-		// // "Should add the sum of the two tiles to the total score"
-		// score += 2*grid[i][j];
+		if (dir == Direction.UP){
+			mi = i+1;
+			mj = j;
+		} else if (dir == Direction.DOWN) {
+			mi = i-1;
+			mj = j;
+		} else if (dir == Direction.LEFT) {
+			mi = i;
+			mj = j+1;
+		} else {  // dir == RIGHT
+			mi = i;
+			mj = j-1;
+		}
+
+		// 0. assert [i,j]==[mi,mj]
+		assert (grid[mi][mj]==grid[i][j]);  // Should NEVER be different values
+		// 1. combine the tiles into a new tile in spot [i,j]
+		grid[i][j] = 2*grid[i][j];
+		// 2. remove the merged tile from the grid
+		grid[mi][mj] = 0;
+		// 3. add the merged space to the zeros
+		int[] addArg = {mi, mj};
+		empty.add(addArg);
+
+		// "Should add the sum of the two tiles to the total score"
+		score += 2*grid[i][j];
 	}
 
 	private void moveTilesUp(){
@@ -307,16 +305,14 @@ public class Board2048 {
 	 * 
 	 * Returns an int if it fails (make void if unused)
 	 */
-	private int newRandomTile(){
-		if (empty.isEmpty()){
-			return 0;
-		}
+	private void newRandomTile(){
+		assert (!empty.isEmpty());
+
 		int rint = (new Random()).nextInt(empty.size());
 		// maybe something is wrong with the .size()?? i.e. maybe it's len of space rather than list????!??!?!
 		int[] coords = empty.get(rint);
 		initializeTile(coords[0], coords[1]);
 		empty.remove(rint);  // make sure this is removing INDEX rint, not object/value of rint
-		return 1;
 	}
 	
 	/**
