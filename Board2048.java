@@ -12,7 +12,7 @@ import java.util.Random;
 public class Board2048 {
 	private int[][] grid;
 	private int score;
-	private ArrayList<int[]> empty; // list of [i,j] coordinates of zeros/empty
+	private ArrayList<int[]> empty;  // list of [i,j] coordinates of zeros/empty
 
 	public Board2048(int theSize) {
 		grid = new int[theSize][theSize];
@@ -23,25 +23,35 @@ public class Board2048 {
 	}
 
 	/**
+	 * Use this function to help maintain the leaderboard and/or display
+	 * the score
+	 * 
+	 * @return (int) value of the user's score
+	 */
+	public int getScore(){
+		return score;
+	}
+
+	/**
 	 * DELETE THIS FUNC LATER!!
 	 */
 	private void runTest(){
-		System.out.println(toString());
+		System.out.println(toString() + "\n\nDOWN");
 		down();
-		System.out.println(toString());
+		System.out.println(toString() + "\n\nRIGHT");
 		right();
-		System.out.println(toString());
+		System.out.println(toString() + "\n\nLEFT");
 		left();
-		System.out.println(toString());
+		System.out.println(toString() + "\n\nUP");
 		up();
-		System.out.println(toString());
+		System.out.println(toString() + "\n\nDOWN");
 
 		down();
-		System.out.println(toString());
+		System.out.println(toString() + "\n\nRIGHT");
 		right();
-		System.out.println(toString());
+		System.out.println(toString() + "\n\nUP");
 		up();
-		System.out.println(toString());
+		System.out.println(toString() + "\n\nLEFT");
 		left();
 		System.out.println(toString());
 	}
@@ -142,16 +152,20 @@ public class Board2048 {
 
 		// 0. assert [i,j]==[mi,mj]
 		assert (grid[mi][mj]==grid[i][j]);  // Should NEVER be different values
+
+		int newValue = 2*grid[i][j];
+
 		// 1. combine the tiles into a new tile in spot [i,j]
-		grid[i][j] = 2*grid[i][j];
+		grid[i][j] = newValue;
 		// 2. remove the merged tile from the grid
 		grid[mi][mj] = 0;
 		// 3. add the merged space to the zeros
 		int[] addArg = {mi, mj};
 		empty.add(addArg);
 
-		// "Should add the sum of the two tiles to the total score"
-		score += 2*grid[i][j];
+		// 4. update score ("add the sum of the two tiles to the total score")
+		score += newValue;
+		System.out.println("* Score updated: " + Integer.toString(score));
 	}
 
 	private void moveTilesUp(){
