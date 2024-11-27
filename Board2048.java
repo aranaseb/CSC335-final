@@ -1,5 +1,9 @@
+
 /**
  * NOTES:
+ * 			- merging has not been implemented yet!!!!! mostly just moves UDLR
+ * 				 - so I also don't know whether or not the merging logic that 
+ * 				   already exists in this file works or not (bc can't merge yet)
  * 			- There's a lot of repeated/duplicate code; I'll combine them
  * 			  when I'm confident with the game logic/later on after it actually
  * 			  fully works.
@@ -12,54 +16,12 @@ import java.util.Random;
 public class Board2048 {
 	private int[][] grid;
 	private int score;
-	private ArrayList<int[]> empty;  // list of [i,j] coordinates of zeros/empty
+	private ArrayList<int[]> empty; // list of [i,j] coordinates of zeros/empty
 
 	public Board2048(int theSize) {
 		grid = new int[theSize][theSize];
 		score = 0;
 		empty = new ArrayList<int[]>();
-		setup();
-		// runTest();
-	}
-
-	/**
-	 * Use this function to help maintain the leaderboard and/or display
-	 * the score
-	 * 
-	 * @return (int) value of the user's score
-	 */
-	public int getScore(){
-		return score;
-	}
-
-	/**
-	 * DELETE THIS FUNC LATER!!
-	 */
-	private void runTest(){
-		System.out.println(toString() + "\n\nDOWN");
-		down();
-		System.out.println(toString() + "\n\nRIGHT");
-		right();
-		System.out.println(toString() + "\n\nLEFT");
-		left();
-		System.out.println(toString() + "\n\nUP");
-		up();
-		System.out.println(toString() + "\n\nDOWN");
-
-		down();
-		System.out.println(toString() + "\n\nRIGHT");
-		right();
-		System.out.println(toString() + "\n\nUP");
-		up();
-		System.out.println(toString() + "\n\nLEFT");
-		left();
-		System.out.println(toString());
-	}
-
-	/**
-	 * Sets up the grid by initializing tiles and 
-	 */
-	private void setup(){
 		initializeTile(0,0);
 		initializeTile(0,1);
 
@@ -75,6 +37,17 @@ public class Board2048 {
 				empty.add(toAdd);
 			}
 		}
+
+		// testing:
+		// System.out.println(toString());
+		// down();
+		// System.out.println(toString());
+		// right();
+		// System.out.println(toString());
+		// left();
+		// System.out.println(toString());
+		// up();
+		// System.out.println(toString());
 	}
 
 	public int[][] getGrid() {
@@ -112,11 +85,12 @@ public class Board2048 {
 		}
 		grid[newI][newJ] = grid[oldI][oldJ];
 		grid[oldI][oldJ] = 0;
-		int findIdx = indexInEmpty(newI, newJ);
+		int[] arg1 = {oldI, oldJ};
+		int findIdx = empty.indexOf(arg1);
 		if (findIdx != -1){
 			empty.remove(findIdx);
 		}
-		int[] arg2 = {oldI, oldJ};
+		int[] arg2 = {newI, newJ};
 		empty.add(arg2);
 	}
 	
@@ -128,44 +102,9 @@ public class Board2048 {
 		 * @param j
 		 * @param dir
 		 */
-		int mi;
-		int mj;
-		
-		mi = 0;
-		mj = 0;
 
-		assert (dir != null);  // this shouldn't happen
-
-		if (dir == Direction.UP){
-			mi = i+1;
-			mj = j;
-		} else if (dir == Direction.DOWN) {
-			mi = i-1;
-			mj = j;
-		} else if (dir == Direction.LEFT) {
-			mi = i;
-			mj = j+1;
-		} else {  // dir == RIGHT
-			mi = i;
-			mj = j-1;
-		}
-
-		// 0. assert [i,j]==[mi,mj]
-		assert (grid[mi][mj]==grid[i][j]);  // Should NEVER be different values
-
-		int newValue = 2*grid[i][j];
-
-		// 1. combine the tiles into a new tile in spot [i,j]
-		grid[i][j] = newValue;
-		// 2. remove the merged tile from the grid
-		grid[mi][mj] = 0;
-		// 3. add the merged space to the zeros
-		int[] addArg = {mi, mj};
-		empty.add(addArg);
-
-		// 4. update score ("add the sum of the two tiles to the total score")
-		score += newValue;
-		System.out.println("* Score updated: " + Integer.toString(score));
+		// "Should add the sum of the two tiles to the total score"
+		score += grid[i][j] * 2;
 	}
 
 	private void moveTilesUp(){
@@ -238,7 +177,7 @@ public class Board2048 {
 		 */
 		moveTilesUp();  // puts all existing tiles in upper-most spots
 
-		for (int i=0; i<grid.length-1; i++){
+		for (int i=0; i<grid.length; i++){
 			for (int j=0; j<grid.length; j++){
 				if (grid[i][j] != 0){
 					if (grid[i][j] == grid[i+1][j]){
@@ -249,7 +188,7 @@ public class Board2048 {
 		}
 		// fill any holes created by merging by moving tiles up again
 		moveTilesUp();
-		newRandomTile();
+		// newRandomTile();
 	}
 
 	public void down(){
@@ -258,7 +197,7 @@ public class Board2048 {
 		 */
 		moveTilesDown();  // puts all existing tiles in lower-most spots
 
-		for (int i=grid.length-1; i>0; i--){
+		for (int i=grid.length-1; i>=0; i--){
 			for (int j=0; j<grid.length; j++){
 				if (grid[i][j] != 0){
 					// check if a merge is required
@@ -270,17 +209,18 @@ public class Board2048 {
 		}
 		// fill any holes created by merging by moving tiles down again
 		moveTilesDown();
-		newRandomTile();
+		// newRandomTile();
 	}
 
 	public void left(){
 		/**
 		 * Executes the user command for LEFT
 		 */
+		// Do the iteration
 		moveTilesLeft();  // puts all existing tiles in left-most spots
 
 		for (int i=0; i<grid.length; i++){
-			for (int j=0; j<grid.length-1; j++){
+			for (int j=0; j<grid.length; j++){
 				if (grid[i][j] != 0){
 					if (grid[i][j] == grid[i][j+1]){
 						merge(i, j, Direction.LEFT);
@@ -290,17 +230,18 @@ public class Board2048 {
 		}
 		// fill any holes created by merging by moving tiles left again
 		moveTilesLeft();		
-		newRandomTile();
+		// newRandomTile();
 	}
 
 	public void right(){
 		/**
 		 * Executes the user command for RIGHT
 		 */
+		// Do the iteration
 		moveTilesRight();  // puts all existing tiles in right-most spots
 
 		for (int i=0; i<grid.length; i++){
-			for (int j=grid.length-1; j>0; j--){
+			for (int j=grid.length-1; j>=0; j--){
 				if (grid[i][j] != 0){
 					if (grid[i][j] == grid[i][j-1]){
 						merge(i, j, Direction.RIGHT);
@@ -310,39 +251,9 @@ public class Board2048 {
 		}
 		// fill any holes created by merging by moving tiles right again
 		moveTilesRight();
-		newRandomTile();
-	}
-
-	/**
-	 * Adds a new random tile on an empty space
-	 * 
-	 * Returns an int if it fails (make void if unused)
-	 */
-	private void newRandomTile(){
-		assert (!empty.isEmpty());
-
-		int rint = (new Random()).nextInt(empty.size());
-		// maybe something is wrong with the .size()?? i.e. maybe it's len of space rather than list????!??!?!
-		int[] coords = empty.get(rint);
-		initializeTile(coords[0], coords[1]);
-		empty.remove(rint);  // make sure this is removing INDEX rint, not object/value of rint
+		// newRandomTile();
 	}
 	
-	/**
-	 * Returns the index of the array [i,j] in the 'empty' ArrayList.
-	 * Works similarly to ArrayList.indexOf(): returns -1 if it does
-	 * not exist in the list. 
-	 */
-	private int indexInEmpty(int i, int j) {
-		for (int idx=0; idx<empty.size(); idx++){
-			int[] coords = empty.get(idx);
-			if ((coords[0]==i) && (coords[1]==j)){
-				return idx;
-			}
-		}
-		return -1;
-	}
-
 	@Override
 	public String toString(){
 		/**
