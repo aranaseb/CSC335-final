@@ -1,12 +1,3 @@
-
-/**
- * NOTES:
- * 			- There's a lot of repeated/duplicate code; I'll combine them
- * 			  when I'm confident with the game logic/later on after it actually
- * 			  fully works.
- * 				 - the public funcs (up(), down(), left(), right()) should be
- * 				   exactly the same tho unless we want to change it
- */
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -21,7 +12,35 @@ public class Board2048 {
 		empty = new ArrayList<int[]>();
 		
 		setup();
+		// System.out.println(getGameStatus());
 		// runTest();
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public GameStatus getGameStatus(){
+		/**
+		 * Returns whether the game is over. 
+		 * Game is over when (checked in the following order):
+		 * 		1. user reaches 2048 (WIN)
+		 * 		2. 'empty' is empty
+		 * 			  &&
+		 * 		3. no direction's move would cause a merge at any point (LOSS)
+		 */
+		if (has2048()){
+			return GameStatus.WIN;
+		}
+
+		if (!empty.isEmpty()){  // if 'empty' has anything then a move is possible
+			return GameStatus.IN_PROGRESS;  // game is not over
+		}
+		if (doesMerge()){
+			return GameStatus.IN_PROGRESS;  // game is not over
+		}
+		// No moves are possible. The game is over. 
+		return GameStatus.LOSS;
 	}
 
 	public int[][] getGrid() {
@@ -182,6 +201,7 @@ public class Board2048 {
 		if (findIdx != -1){
 			empty.remove(findIdx);
 		}
+
 		int[] arg2 = {oldI, oldJ};
 		empty.add(arg2);
 	}
@@ -308,6 +328,31 @@ public class Board2048 {
 		empty.remove(rint);  // make sure this is removing INDEX rint, not object/value of rint
 	}
 
+	private Boolean doesMerge(){
+		/**
+		 * This returns whether or not a merge would occur if the user
+		 * provided a move in some direction. 
+		 */
+
+		 /*
+		 If any 2 adjacent tiles are equal, then there's a merge possible.
+		 It doesn't matter what direction you check
+		 */
+		for (int i=0; i<grid.length-1; i++){
+			for (int j=0; j<grid.length-1; j++){
+				if (grid[i][j] != 0){
+					if (grid[i][j] == grid[i+1][j]){  // check vertical equality
+						return true;
+					}
+					if (grid[i][j]==grid[i][j+1]){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	private int indexInEmpty(int i, int j) {
 		/**
 		 * Returns the index of the array [i,j] in the 'empty' ArrayList.
@@ -323,6 +368,20 @@ public class Board2048 {
 		return -1;
 	}
 	
+	private Boolean has2048(){
+		/**
+		 * Returns whether or not 2048 exists in the board.
+		 */
+		for (int i=0; i<grid.length; i++){
+			for (int j=0; j<grid.length; j++){
+				if (grid[i][j] == 2048){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public String toString(){
 		/**
