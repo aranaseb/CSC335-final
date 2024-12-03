@@ -6,6 +6,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.ldap.Control;
 import javax.swing.BorderFactory;
@@ -41,6 +45,8 @@ public class GUI {
 			graphics.fillRoundRect(0, 0, width - 1, height - 1, arcs.width, arcs.height);// paint background
 		}
 	};
+
+	private static JLabel[][] labels;
 	
 	private static final int BOARD_SIZE = WINDOW_SIZE - SPACING*2;
 
@@ -71,18 +77,15 @@ public class GUI {
 
 		boardView.setLayout(new GridLayout(size, size, SPACING / 2, SPACING / 2));
 
-		int tile;
+		labels = new JLabel[size][size]; // Couldn't get components from the boardView, so I added this
 
 		for (int i = 0; i < theController.getSize(); i++) {
 			for (int j = 0; j < theController.getSize(); j++) {
-				tile = theController.getTileAt(i, j);
-
 				JLabel cell = new JLabel(" ", SwingConstants.CENTER) {
 					@Override
 					protected void paintComponent(Graphics g) {
-						super.paintComponent(g);
 						Dimension arcs = new Dimension(50, 50); // Border corners arcs {width,height}, change this to
-																// whatever you want
+						// whatever you want
 						int width = getWidth();
 						int height = getHeight();
 						Graphics2D graphics = (Graphics2D) g;
@@ -91,21 +94,37 @@ public class GUI {
 						// Draws the rounded panel with borders.
 						graphics.setColor(getBackground());
 						graphics.fillRoundRect(0, 0, width - 1, height - 1, arcs.width, arcs.height);// paint background
+
+						super.paintComponent(g); // Moved this to prevent painting over text
 					}
 				};
+
 				cell.setBackground(Color.LIGHT_GRAY);
 				cell.setOpaque(false);
 				cell.setFont(new Font("Courier", Font.BOLD, BOARD_SIZE / size / 4));
 				cell.setForeground(Color.BLACK);
-				if (tile == 0) {
-					cell.setBackground(Color.LIGHT_GRAY);
-				} else {
-					cell.setText(tile + "");
-					cell.setBackground(Color.GRAY);
-				}
+				labels[i][j] = cell;
 				boardView.add(cell);
 			}
 		}
+
+		updateView();
+
+		window.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == 87 || e.getKeyCode() == 38)
+					theController.move(Direction.UP);
+				else if (e.getKeyCode() == 65 || e.getKeyCode() == 37)
+					theController.move(Direction.LEFT);
+				else if (e.getKeyCode() == 83 || e.getKeyChar() == 40)
+					theController.move(Direction.DOWN);
+				else if (e.getKeyCode() == 68 || e.getKeyChar() == 39)
+					theController.move(Direction.RIGHT);
+
+				updateView();
+			}
+		});
 
 		window.revalidate();
 	}
@@ -123,5 +142,25 @@ public class GUI {
 		dialog.add(sizePicker);
 		JOptionPane.showMessageDialog(null, dialog, "Pick Size", JOptionPane.INFORMATION_MESSAGE);
 		return sizePicker.getValue();
+	}
+
+	private static void updateView() {
+		/**
+		 * Updates the visible cells to contain the data stored in the model
+		 */
+		for (int i = 0; i < theController.getSize(); i++) {
+			for (int j = 0; j < theController.getSize(); j++) {
+				JLabel cell = labels[i][j];
+				String newText = Integer.toString(theController.getTileAt(i, j));
+
+				if (newText.equals("0")) {
+					cell.setText(" ");
+					cell.setBackground(Color.LIGHT_GRAY);
+				} else {
+					cell.setText(newText);
+					cell.setBackground(Color.GRAY);
+				}
+			}
+		}
 	}
 }

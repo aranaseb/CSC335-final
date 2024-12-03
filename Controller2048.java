@@ -57,12 +57,12 @@ public class Controller2048 {
         leaderboard.save();
     }
 
-    public boolean isOver() {
+    public GameStatus getStatus() {
         /**
          * @returns whether there is a possible move based on the state of
          * the board
          * TODO implement this
          */
-        return false;
+        return board.getGameStatus();
     }
 }

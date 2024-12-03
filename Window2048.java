@@ -26,8 +26,7 @@ public class Window2048 extends JFrame {
 	static Color TREE_GREEN = new Color(0x1A5319);
 
 	Image img;
-	Graphics2D g2d;
-	BoardGUI board = new BoardGUI();
+	Graphics2D g2d;;
 
 	public Window2048() {
 		setTitle("2048");
