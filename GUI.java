@@ -117,10 +117,12 @@ public class GUI {
 					theController.move(Direction.UP);
 				else if (e.getKeyCode() == 65 || e.getKeyCode() == 37)
 					theController.move(Direction.LEFT);
-				else if (e.getKeyCode() == 83 || e.getKeyChar() == 40)
+				else if (e.getKeyCode() == 83 || e.getKeyCode() == 40)
 					theController.move(Direction.DOWN);
-				else if (e.getKeyCode() == 68 || e.getKeyChar() == 39)
+				else if (e.getKeyCode() == 68 || e.getKeyCode() == 39)
 					theController.move(Direction.RIGHT);
+
+				System.out.println(e.getKeyCode());
 
 				updateView();
 			}
