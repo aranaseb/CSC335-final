@@ -7,16 +7,26 @@ public class Board2048 {
 	private ArrayList<int[]> empty;  // list of [i,j] coordinates of zeros/empty
 
 	public Board2048(int theSize) {
+		/**
+		 * Creates a Board2048 model for the program. It initializes the grid, score,
+		 * and ArrayList of empty spaces that are used to generate new tiles. 
+		 * Creates a grid of the size that is requested by the user. 
+		 * 
+		 * @param theSize - The size of the grid to create for the user
+		 */
 		grid = new int[theSize][theSize];
 		score = 0;
 		empty = new ArrayList<int[]>();
 		
 		setup();
-		// System.out.println(getGameStatus());
-		// runTest();
 	}
 
 	public int getScore() {
+		/**
+		 * Reutrns the current score that the user has.
+		 * 
+		 * @return user's current score (int)
+		 */
 		return score;
 	}
 
@@ -28,6 +38,8 @@ public class Board2048 {
 		 * 		2. 'empty' is empty
 		 * 			  &&
 		 * 		3. no direction's move would cause a merge at any point (LOSS)
+		 * 
+		 * @return: GameStatus of the user's game currently in progress
 		 */
 		if (has2048()){
 			return GameStatus.WIN;
@@ -81,7 +93,9 @@ public class Board2048 {
 		}
 		// fill any holes created by merging by moving tiles up again
 		moveTilesUp();
-		newRandomTile();
+		if (empty.size() != 0){
+			newRandomTile();
+		}
 	}
 
 	public void down(){
@@ -102,7 +116,9 @@ public class Board2048 {
 		}
 		// fill any holes created by merging by moving tiles down again
 		moveTilesDown();
-		newRandomTile();
+		if (empty.size() != 0){
+			newRandomTile();
+		}
 	}
 
 	public void left(){
@@ -121,8 +137,10 @@ public class Board2048 {
 			}
 		}
 		// fill any holes created by merging by moving tiles left again
-		moveTilesLeft();		
-		newRandomTile();
+		moveTilesLeft();	
+		if (empty.size() != 0){	
+			newRandomTile();
+		}
 	}
 
 	public void right(){
@@ -142,30 +160,20 @@ public class Board2048 {
 		}
 		// fill any holes created by merging by moving tiles right again
 		moveTilesRight();
-		newRandomTile();
+		if (empty.size() != 0){
+			newRandomTile();
+		}
 	}
 
-	private void runTest(){
-		System.out.println(toString() + "\n\nDOWN");
-		down();
-		System.out.println(toString() + "\n\nRIGHT");
-		right();
-		System.out.println(toString() + "\n\nLEFT");
-		left();
-		System.out.println(toString() + "\n\nUP");
-		up();
-		System.out.println(toString() + "\n\nDOWN");
-		down();
-		System.out.println(toString() + "\n\nRIGHT");
-		right();
-		System.out.println(toString() + "\n\nUP");
-		up();
-		System.out.println(toString() + "\n\nLEFT");
-		left();
-		System.out.println(toString());
-	}
+
+	// Private Methods:
 
 	private void setup(){
+		/**
+		 * Sets up the grid for the game by initializing the first two tiles
+		 * and adding the rest of the coordinates in the grid to the
+		 * ArrayList of empty grid spaces. 
+		 */
 		initializeTile(0,0);
 		initializeTile(0,1);
 
@@ -184,7 +192,17 @@ public class Board2048 {
 	}
 
 	private void initializeTile(int i, int j){
-		// initializes tile at [i,j]
+		/**
+		 * Initializes a single tile at the spot grid[i][j] on
+		 * the game board. Creates a new number on the board in
+		 * that given spot with a 7/10 probability of getting a
+		 * 2 (and 3/10 of getting a 4).
+		 * Note: does NOT remove the space from 'empty' here
+		 * 
+		 * @param i: the i in grid[i][j] of the empty tile to initialize
+		 * @param j: the j in grid[i][j] of the empty tile to initialize
+		 */
+		assert (grid[i][j]==0);
 		Random r = new Random();
 		// 7/10 probability of getting a 2
 		int options[] = {2,2,2,2,2,2,2,4,4,4};
@@ -192,15 +210,25 @@ public class Board2048 {
 	}
 
 	private void moveTile(int oldI, int oldJ, int newI, int newJ){
+		/**
+		 * Moves the tile from the position grid[oldI][oldJ] to the
+		 * position grid[newI][newJ] on the game board. Also updates
+		 * 'empty' accordingly. 
+		 * 
+		 * @param oldI: old/prev value of i in grid[i][j]
+		 * @param oldJ: old/prev value of j in grid[i][j]
+		 * @param newI: new value of i in grid[i][j]
+		 * @param newJ: new value of j in grid[i][j]
+		 */
 		if ((oldI==newI) && (oldJ==newJ)){
 			return;
 		}
 		grid[newI][newJ] = grid[oldI][oldJ];
 		grid[oldI][oldJ] = 0;
+
 		int findIdx = indexInEmpty(newI, newJ);
-		if (findIdx != -1){
-			empty.remove(findIdx);
-		}
+		assert (findIdx != -1);
+		empty.remove(findIdx);
 
 		int[] arg2 = {oldI, oldJ};
 		empty.add(arg2);
@@ -208,11 +236,12 @@ public class Board2048 {
 	
 	private void merge(int i, int j, Direction dir){
 		/**
-		 * Merges two identical tiles. 
+		 * Merges two identical tiles while moving in the given
+		 * direction, dir. 
 		 * 
-		 * @param i
-		 * @param j
-		 * @param dir
+		 * @param i: in grid[i][j]
+		 * @param j: in grid[i][j]
+		 * @param dir: the move's/merge's Direction
 		 */
 
 		int mi;
@@ -220,7 +249,7 @@ public class Board2048 {
 		
 		mi = 0;
 		mj = 0;
-		assert (dir != null);  // this shouldn't happen
+		assert (dir != null);
 		if (dir == Direction.UP){
 			mi = i+1;
 			mj = j;
@@ -247,10 +276,12 @@ public class Board2048 {
 		empty.add(addArg);
 		// 4. update score ("add the sum of the two tiles to the total score")
 		score += newValue;
-		System.out.println("* Score updated: " + Integer.toString(score));
 	}
 
 	private void moveTilesUp(){
+		/**
+		 * Moves all of the tiles in the grid to the upper-most positions.
+		 */
 		for (int i=0; i<grid.length; i++){
 			for (int j=0; j<grid.length; j++){
 				// for all spaces that have existing tiles/values:
@@ -267,6 +298,9 @@ public class Board2048 {
 	}
 
 	private void moveTilesDown(){
+		/**
+		 * Moves all of the tiles in the grid to the bottom-most positions.
+		 */
 		for (int i=grid.length-1; i>=0; i--){
 			for (int j=0; j<grid.length; j++){
 				// for all spaces that have existing tiles/values:
@@ -283,6 +317,9 @@ public class Board2048 {
 	}
 
 	private void moveTilesRight(){
+		/**
+		 * Moves all of the tiles in the grid to the right-most positions.
+		 */
 		for (int i=0; i<grid.length; i++){
 			for (int j=grid.length-1; j>=0; j--){  // start TOP RIGHT
 				// for all spaces that have existing tiles/values:
@@ -299,6 +336,9 @@ public class Board2048 {
 	}
 
 	private void moveTilesLeft(){
+		/**
+		 * Moves all of the tiles in the grid to the left-most positions.
+		 */
 		for (int i=0; i<grid.length; i++){
 			for (int j=0; j<grid.length; j++){  // start TOP LEFT
 				// for all spaces that have existing tiles/values:
@@ -316,40 +356,49 @@ public class Board2048 {
 
 	private void newRandomTile(){
 		/**
-		 * Adds a new random tile on an empty space
-		 * 
-		 * Returns an int if it fails (make void if unused)
+		 * Adds a new random tile on an empty space. Uses the 'empty'
+		 * ArrayList to find an empty space on the board.
 		 */
 		assert (!empty.isEmpty());
 		int rint = (new Random()).nextInt(empty.size());
-		// maybe something is wrong with the .size()?? i.e. maybe it's len of space rather than list????!??!?!
 		int[] coords = empty.get(rint);
 		initializeTile(coords[0], coords[1]);
-		empty.remove(rint);  // make sure this is removing INDEX rint, not object/value of rint
+		empty.remove(rint);
 	}
 
 	private Boolean doesMerge(){
 		/**
 		 * This returns whether or not a merge would occur if the user
-		 * provided a move in some direction. 
+		 * provided a move in some/any direction. 
+		 * 
+		 * @return: Whether a move/merge is possible in the game board
 		 */
 
-		 /*
-		 If any 2 adjacent tiles are equal, then there's a merge possible.
-		 It doesn't matter what direction you check
-		 */
 		for (int i=0; i<grid.length-1; i++){
 			for (int j=0; j<grid.length-1; j++){
 				if (grid[i][j] != 0){
 					if (grid[i][j] == grid[i+1][j]){  // check vertical equality
 						return true;
 					}
-					if (grid[i][j]==grid[i][j+1]){
+					if (grid[i][j]==grid[i][j+1]){   // check horizontal equality
 						return true;
 					}
 				}
 			}
 		}
+		
+		for (int i=0; i<grid.length-1; i++){
+			// covers bottom row (that isn't checked by prev loop)
+			if (grid[grid.length-1][i] == grid[grid.length-1][i+1]){
+				return true;
+			}
+
+			// right row (that isn't checked by prev loop)
+			if (grid[i][grid.length-1] == grid[i+1][grid.length-1]){
+				return true;
+			}
+		}
+		
 		return false;
 	}
 
@@ -358,6 +407,10 @@ public class Board2048 {
 		 * Returns the index of the array [i,j] in the 'empty' ArrayList.
 		 * Works similarly to ArrayList.indexOf(): returns -1 if it does
 		 * not exist in the list. 
+		 * 
+		 * @param i: i in grid[i][j]
+		 * @param j: j in grid[i][j]
+		 * @return: index of the coords in 'empty' (as int)
 		 */
 		for (int idx=0; idx<empty.size(); idx++){
 			int[] coords = empty.get(idx);
@@ -371,6 +424,8 @@ public class Board2048 {
 	private Boolean has2048(){
 		/**
 		 * Returns whether or not 2048 exists in the board.
+		 * 
+		 * @return: whether 2048 exists in the game board (Bool)
 		 */
 		for (int i=0; i<grid.length; i++){
 			for (int j=0; j<grid.length; j++){
@@ -387,6 +442,8 @@ public class Board2048 {
 		/**
 		 * For testing, not (at least currently) meant to be used 
 		 * in the implementation of the game. 
+		 * 
+		 * @return: String representation of the game board ('grid')
 		 */
 		String output = "[ ";
 		for (int i=0; i<grid.length; i++){
@@ -395,8 +452,14 @@ public class Board2048 {
 			}
 			output += "[";
 			for (int j : grid[i]){
-				output += Integer.toString(j) + ",";
+				if (j==0){
+					output += "     ";
+				} else{
+					output += String.format("%4d", j);
+					output += " ";
+				}
 			}
+			output = output.substring(0, output.length()-1);
 			output += "]\n";
 		}
 		output += " ]";
