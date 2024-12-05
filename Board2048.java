@@ -181,12 +181,14 @@ public class Board2048 {
 		for (int i=2; i<grid.length; i++){
 			int[] toAdd = {0, i};
 			empty.add(toAdd);
+			grid[0][i]=0;
 		}
 		// add zeros everywhere else
 		for (int i=1; i<grid.length; i++){
 			for (int j=0; j<grid.length; j++){
 				int[] toAdd = {i, j};
 				empty.add(toAdd);
+				grid[i][j]=0;
 			}
 		}
 	}
@@ -203,7 +205,7 @@ public class Board2048 {
 		 * @param j: the j in grid[i][j] of the empty tile to initialize
 		 */
 		assert (grid[i][j]==0);
-		Random r = new Random();
+		Random r = new Random(0);
 		// 7/10 probability of getting a 2
 		int options[] = {2,2,2,2,2,2,2,4,4,4};
 		grid[i][j] = options[r.nextInt(0,9)];

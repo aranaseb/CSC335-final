@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * This class provides an interface between the GUI and the model
  * @author Winston Reese
@@ -64,5 +66,13 @@ public class Controller2048 {
          * TODO implement this
          */
         return board.getGameStatus();
+    }
+
+    public List<Integer> getLeaderboard(){
+        return leaderboard.getScores();  // Still NOT an escaping reference (it's unmodifiable)!!
+    }
+
+    public int getScore(){
+        return board.getScore();
     }
 }

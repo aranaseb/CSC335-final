@@ -67,7 +67,7 @@ public class Leaderboard {
          * @param score - the new score to be added
          */
         scores.add(score);
-        Collections.sort(scores);
+        Collections.sort(scores, Collections.reverseOrder());
     }
 
     public void save() {
@@ -86,5 +86,9 @@ public class Leaderboard {
         } catch (IOException e) {
             System.out.println("Failed to save scores!");
         }
+    }
+
+    public List<Integer> getScores(){
+        return Collections.unmodifiableList(scores);  // NOT an escaping reference; this is safe
     }
 }
