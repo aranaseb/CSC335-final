@@ -5,6 +5,7 @@ public class Board2048 {
 	private int[][] grid;
 	private int score;
 	private ArrayList<int[]> empty;  // list of [i,j] coordinates of zeros/empty
+	Random r = new Random(0);
 
 	public Board2048(int theSize) {
 		/**
@@ -44,19 +45,14 @@ public class Board2048 {
 		if (has2048()){
 			return GameStatus.WIN;
 		}
-
 		if (!empty.isEmpty()){  // if 'empty' has anything then a move is possible
-			return GameStatus.IN_PROGRESS;  // game is not over
+			return GameStatus.IN_PROGRESS;
 		}
-		if (doesMerge()){
-			return GameStatus.IN_PROGRESS;  // game is not over
+		if (doesMerge()){  // if a merge is possible then game is not over
+			return GameStatus.IN_PROGRESS;
 		}
 		// No moves are possible. The game is over. 
 		return GameStatus.LOSS;
-	}
-
-	public int[][] getGrid() {
-		return grid;  // escaping reference
 	}
 
 	public int get(int i, int j) {
@@ -174,23 +170,18 @@ public class Board2048 {
 		 * and adding the rest of the coordinates in the grid to the
 		 * ArrayList of empty grid spaces. 
 		 */
-		initializeTile(0,0);
-		initializeTile(0,1);
 
-		// add the rest of the zeros in top row
-		for (int i=2; i<grid.length; i++){
-			int[] toAdd = {0, i};
-			empty.add(toAdd);
-			grid[0][i]=0;
-		}
 		// add zeros everywhere else
-		for (int i=1; i<grid.length; i++){
+		for (int i=0; i<grid.length; i++){
 			for (int j=0; j<grid.length; j++){
 				int[] toAdd = {i, j};
 				empty.add(toAdd);
 				grid[i][j]=0;
 			}
 		}
+
+		newRandomTile();
+		newRandomTile();
 	}
 
 	private void initializeTile(int i, int j){
@@ -205,7 +196,6 @@ public class Board2048 {
 		 * @param j: the j in grid[i][j] of the empty tile to initialize
 		 */
 		assert (grid[i][j]==0);
-		Random r = new Random(0);
 		// 7/10 probability of getting a 2
 		int options[] = {2,2,2,2,2,2,2,4,4,4};
 		grid[i][j] = options[r.nextInt(0,9)];
