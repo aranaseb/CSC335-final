@@ -9,12 +9,12 @@ import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingWorker;
 
 /*
  * GUI class for the actual game. Returns to GUI menu class
@@ -26,7 +26,7 @@ public class Window2048 extends JFrame {
 	private int width = 1200;
 	private int height = 800;
 	private final Dimension windowSize = new Dimension(width, height);
-	
+
 	private final int BOARD_SIZE = 500;
 
 	private static Color MENU_RED = new Color(0xf54248);
@@ -91,7 +91,8 @@ public class Window2048 extends JFrame {
 
 			g2d.fillPolygon(new int[] { WIDTH / 5, WIDTH / 2, (WIDTH / 5) * 4 }, new int[] { 300, -200, 300 }, 3);
 
-			g2d.fillPolygon(new int[] { WIDTH / 21 * 5, WIDTH / 2, (WIDTH / 21) * 16 }, new int[] { 200, -300, 200 }, 3);
+			g2d.fillPolygon(new int[] { WIDTH / 21 * 5, WIDTH / 2, (WIDTH / 21) * 16 }, new int[] { 200, -300, 200 },
+					3);
 
 			g2d.setColor(Color.WHITE);
 			for (int i = 0; i < 100; i++) {
@@ -109,7 +110,7 @@ public class Window2048 extends JFrame {
 			g2d.setColor(TREE_DARK_GREEN);
 			g2d.fillRoundRect(WIDTH / 2 - BOARD_SIZE / 2 - 25, HEIGHT / 2 - BOARD_SIZE / 2 - 25, BOARD_SIZE + 50,
 					BOARD_SIZE + 50, 150, 150);
-			
+
 			super.paintComponent(g);
 		}
 	};
@@ -128,20 +129,20 @@ public class Window2048 extends JFrame {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-		
+
 		add(background);
 
 		this.theController = controller;
 		this.size = theController.getSize();
 	}
-	
+
 	/*
 	 * @post window is visible with board and listeners
 	 */
 	public void run() {
 		drawBoard();
 		setVisible(true);
-		
+
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -159,15 +160,7 @@ public class Window2048 extends JFrame {
 				updateView();
 
 				if (gameOver()) {
-					theController.saveScore(theController.getScore());
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
-					setVisible(false);
-					GUI.show();
-					GUI.drawGameOverView(theController.getStatus(), theController.getScore());
+					(new GameEnder()).execute();
 				}
 			}
 		});
@@ -183,7 +176,7 @@ public class Window2048 extends JFrame {
 		boardView.setBackground(TREE_DARK_GREEN);
 		boardView.setLayout(new GridLayout(size, size));
 		background.add(boardView, 1);
-		
+
 		scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
 		scoreLabel.setSize(new Dimension(250, 75));
 		scoreLabel.setLocation(0, 0);
@@ -219,10 +212,10 @@ public class Window2048 extends JFrame {
 				boardView.add(cell);
 			}
 		}
-		
+
 		updateView();
 	}
-	
+
 	/*
 	 * @post board is redrawn with new colors and numbered tiles.
 	 */
@@ -278,7 +271,46 @@ public class Window2048 extends JFrame {
 		}
 	}
 
+	/*
+	 * @returns false if game in progress, true if win/loss.
+	 */
 	private Boolean gameOver() {
 		return theController.getStatus() != GameStatus.IN_PROGRESS;
+	}
+
+	/*
+	 * For when the game ends. Updates board one last time before returning to menu
+	 * GUI. Separate thread so this works outside of Event Dispatch and final
+	 * changes are visualized.
+	 */
+	class GameEnder extends SwingWorker<String, Object> {
+
+		/*
+		 * @returns null, required by parent class
+		 */
+		@Override
+		protected String doInBackground() throws Exception {
+			return null;
+		}
+
+		/*
+		 * @post game view is updated one last time, before it returns to menu GUI
+		 */
+		@Override
+		protected void done() {
+			revalidate();
+			try {
+				Thread.sleep(4000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			theController.saveScore(theController.getScore());
+			setVisible(false);
+			GUI.show();
+			GUI.drawGameOverView(theController.getStatus(), theController.getScore());
+
+		}
+
 	}
 }
