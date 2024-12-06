@@ -242,11 +242,7 @@ public class GUI {
 	 */
 	private static void updateLeaderboard() {
 		List<Integer> lb;
-		if (theController == null) {
-			lb = leaderboard.getScores();
-		} else {
-			lb = leaderboard.getScores();
-		}
+		lb = leaderboard.getScores();
 
 		for (int i = 0; i < lb.size(); i++) {
 			if (i >= 10) {
