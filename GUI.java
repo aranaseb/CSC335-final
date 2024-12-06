@@ -20,6 +20,12 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
+/*
+ * This class contains the main method which runs the
+ * menu GUI to open a game or see scores.
+ * 
+ * @author Julia Ryan and Sebastian Arana
+ */
 public class GUI {
 	private static Controller2048 theController;
 
@@ -27,22 +33,26 @@ public class GUI {
 	private static final int WINDOW_SIZE = 900;
 
 	private static final int SPACING = 40;
-	private static JPanel menu = new JPanel(new GridLayout(15, 30)); // maybe change; I just didn't mind how GridLayout
-																	// (11,1) looks with this
-	private static JPanel gameOverView = new JPanel(new GridLayout(11, 1)); // 10 score + 'back' button
+	private static JPanel menu = new JPanel(new GridLayout(15, 30));
+
+	private static JPanel gameOverView = new JPanel(new GridLayout(11, 1));
 	private static JLabel[] leaderboardSlots = new JLabel[10];
 	private static Leaderboard initialLeaderboard = new Leaderboard("leaderboard.txt");
-	
+
 	private static JPanel leaderboardView = new JPanel(new GridLayout(11, 1));
 	private static JLabel winOrLoss;
 	private static JLabel scoreLabel;
 
 	private static final int BOARD_SIZE = WINDOW_SIZE - SPACING * 2;
-	
+
 	private static Color MENU_RED = new Color(0xf54248);
 
 	private static JPanel boardView = new JPanel();
 
+	/*
+	 * sets up main window and all components. Ends by running the menu to start and
+	 * makes the window visible.
+	 */
 	public static void main(String[] args) {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
@@ -50,13 +60,13 @@ public class GUI {
 		window.setLayout(new BorderLayout(80, 0));
 
 		JLabel header = new JLabel("2048", SwingConstants.CENTER);
-		header.setPreferredSize(new Dimension(WINDOW_SIZE, SPACING*2));
+		header.setPreferredSize(new Dimension(WINDOW_SIZE, SPACING * 2));
 		header.setFont(new Font("Courier", Font.BOLD, 30));
 		header.setOpaque(true);
 		header.setBackground(MENU_RED);
 		header.setForeground(Color.WHITE);
 		window.add(header, BorderLayout.PAGE_START);
-									
+
 		winOrLoss = new JLabel();
 		scoreLabel = new JLabel();
 		initializeGameOverView();
@@ -64,31 +74,39 @@ public class GUI {
 		initializeMenu();
 
 		runMenu();
-		
+
 		window.setVisible(true);
 	}
 
+	/*
+	 * @pre menu is initialized.
+	 * 
+	 * @post Menu panel is populated with its features
+	 */
 	private static void initializeMenu() {
 		JButton gameButton = new JButton("New Game");
 		JButton leaderboardButton = new JButton("Leaderboard");
-		
+
 		gameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println("switch to game...");
+				// System.out.println("switch to game...");
 				clear();
 				int size = requestSize();
+
 				theController = new Controller2048(new Board2048(size));
+
+				// STARTS A GAME WINDOW
 				Window2048 newGame = new Window2048(theController);
 				newGame.run();
 				window.setVisible(false);
 			}
 		});
-		
+
 		leaderboardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println("switch to leaderboard...");
+				// System.out.println("switch to leaderboard...");
 				clear();
 				drawLeaderboard();
 				window.revalidate();
@@ -100,12 +118,22 @@ public class GUI {
 		menu.add(leaderboardButton);
 	}
 
+	/*
+	 * @pre menu is initialized,
+	 * 
+	 * @post Menu is set as the content of the window.
+	 */
 	private static void runMenu() {
 		window.add(menu, BorderLayout.CENTER);
 		window.revalidate();
 		window.repaint();
 	}
 
+	/*
+	 * @pre winOrLoss, scoreLabel, and gameOverView are initialized.
+	 * 
+	 * @post GameOverView panel is populated with its labels and button.
+	 */
 	private static void initializeGameOverView() {
 
 		gameOverView.add(winOrLoss);
@@ -115,7 +143,7 @@ public class GUI {
 		homeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println("switch back to selection menu (after game completed)");
+				// System.out.println("switch back to selection menu (after game completed)");
 				clear();
 				runMenu();
 			}
@@ -123,11 +151,13 @@ public class GUI {
 		gameOverView.add(homeButton);
 	}
 
+	/*
+	 * @pre winOrLoss, scoreLabel, and gameOverView are initialized.
+	 * 
+	 * @post GameOverView panel has its components written according to a win or
+	 * loss, then it is added to the window.
+	 */
 	public static void drawGameOverView(GameStatus result, int score) {
-		/**
-		 * display win/loss message and then let the user either play again or go to the
-		 * leaderboard
-		 */
 		if (result == GameStatus.LOSS) {
 			winOrLoss.setText("You have lost the game. Better luck next time!");
 			scoreLabel.setText("Your score was " + score);
@@ -141,32 +171,32 @@ public class GUI {
 		window.repaint();
 	}
 
+	/*
+	 * @returns grid size int picked by popu window.
+	 */
 	public static int requestSize() {
-		JSlider sizePicker = new JSlider(4, 8);
+		JSlider sizePicker = new JSlider(4, 10);
 		sizePicker.setPaintTicks(true);
 		sizePicker.setMajorTickSpacing(1);
 		sizePicker.setPaintLabels(true);
 		sizePicker.setValue(4);
 
 		JPanel dialog = new JPanel();
-		JLabel sizeLabel = new JLabel("Pick a Size:");
+		JLabel sizeLabel = new JLabel("Pick a Grid Size:");
 		dialog.add(sizeLabel);
 		dialog.add(sizePicker);
-		JOptionPane.showMessageDialog(null, dialog, "Pick Size", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, dialog, "Grid Size", JOptionPane.INFORMATION_MESSAGE);
 		return sizePicker.getValue();
 	}
 
+	/*
+	 * @pre leaderboardSlots and leaderboardView are not null
+	 * 
+	 * @post leaderboard panel is populated with its components.
+	 */
 	private static void initializeLeaderboard() {
-		/**
-		 * I hightly HIGHLY doubt this will update correctly when you finish a game and
-		 * come back
-		 * 
-		 * Have an internal int[5] arr for the scores. - when a game ends, refresh the
-		 * leaderboard list - draw the page looping thru
-		 */
-		
+
 		for (int i = 0; i < 10; i++) {
-			// add it to leaderboardView
 			JLabel jl = new JLabel("0", SwingConstants.CENTER);
 			leaderboardView.add(jl);
 			leaderboardSlots[i] = jl;
@@ -176,7 +206,7 @@ public class GUI {
 		backButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println("switch back to selection menu");
+				// System.out.println("switch back to selection menu");
 				clear();
 				runMenu();
 			}
@@ -184,35 +214,42 @@ public class GUI {
 		leaderboardView.add(backButton);
 	}
 
+	/*
+	 * @pre boardView is not null.
+	 * 
+	 * @post leaderboard JPanel is set as the window content.
+	 */
 	private static void drawLeaderboard() {
 		boardView.setSize(new Dimension(BOARD_SIZE, BOARD_SIZE));
 		boardView.setBackground(Color.WHITE);
 		updateLeaderboard();
 		window.add(leaderboardView);
 	}
-	
+
+	/*
+	 * @pre window is not null.
+	 * 
+	 * @post sets this GUI menu to visible
+	 */
 	public static void show() {
 		window.setVisible(true);
 	}
-	
+
+	/*
+	 * @pre leaderboard JPanel and leaderboardSlots[] are not null.
+	 * 
+	 * @post leaderboard is set to the controller's new data
+	 */
 	private static void updateLeaderboard() {
-		/**
-		 * I hightly HIGHLY doubt this will update correctly when you finish a game and
-		 * come back
-		 * 
-		 * Have an internal int[5] arr for the scores. - when a game ends, refresh the
-		 * leaderboard list - draw the page looping thru
-		 */
 		List<Integer> lb;
-		if (theController == null) { // no games started yet
+		if (theController == null) {
 			lb = initialLeaderboard.getScores();
-		}
-		else {
+		} else {
 			lb = theController.getLeaderboard();
 		}
-		
+
 		for (int i = 0; i < lb.size(); i++) {
-			if (i >= 10) { // only print the top 10 scores
+			if (i >= 10) {
 				break;
 			}
 			JLabel thisJL = leaderboardSlots[i];
@@ -221,11 +258,12 @@ public class GUI {
 		window.add(leaderboardView);
 	}
 
+	/*
+	 * @pre window is not null
+	 * 
+	 * @post all components are removed except the header.
+	 */
 	private static void clear() {
-		/**
-		 * Does the same thing as window.getContentPane().removeAll() but tries to
-		 * maintain the things that should by consistent (like header)
-		 */
 		window.getContentPane().removeAll();
 		JLabel header = new JLabel("2048", SwingConstants.CENTER);
 		header.setPreferredSize(new Dimension(WINDOW_SIZE, SPACING));
