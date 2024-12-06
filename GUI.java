@@ -6,16 +6,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.naming.ldap.Control;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,128 +21,78 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
 public class GUI {
-	private static Board2048 theBoard;
 	private static Controller2048 theController;
 
-	private static JFrame window = new JFrame("2048");
-	private static final int WINDOW_SIZE = 980;
+	private static JFrame window = new JFrame("2048 Menu");
+	private static final int WINDOW_SIZE = 900;
 
 	private static final int SPACING = 40;
-	private static JPanel menu = new JPanel(new GridLayout(11,1));  // maybe change; I just didn't mind how GridLayout (11,1) looks with this
-	private static JPanel gameOverView = new JPanel(new GridLayout(11,1));  // 10 score + 'back' button
+	private static JPanel menu = new JPanel(new GridLayout(11, 1)); // maybe change; I just didn't mind how GridLayout
+																	// (11,1) looks with this
+	private static JPanel gameOverView = new JPanel(new GridLayout(11, 1)); // 10 score + 'back' button
 	private static JLabel[] leaderboardSlots = new JLabel[10];
-
-	private static JPanel boardView = new JPanel() {
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Dimension arcs = new Dimension(50, 50); // Border corners arcs {width,height}, change this to
-													// whatever you want
-			int width = getWidth();
-			int height = getHeight();
-			Graphics2D graphics = (Graphics2D) g;
-			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-			// Draws the rounded panel with borders.
-			graphics.setColor(getBackground());
-			graphics.fillRoundRect(0, 0, width - 1, height - 1, arcs.width, arcs.height);// paint background
-		}
-	};
-
-	private static JPanel leaderboardView = new JPanel(new GridLayout(11,1)) {
-		@Override
-		protected void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Dimension arcs = new Dimension(150, 50);
-			int width = getWidth();
-			int height = getHeight();
-			Graphics2D graphics = (Graphics2D) g;
-			graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			graphics.setColor(getBackground());
-			graphics.fillRoundRect(0, 0, width - 1, height - 1, arcs.width, arcs.height);// paint background
-		}
-	};
-
-	private static JLabel[][] labels;
+	private static Leaderboard initialLeaderboard = new Leaderboard("leaderboard.txt");
 	
-	private static final int BOARD_SIZE = WINDOW_SIZE - SPACING*2;
+	private static JPanel leaderboardView = new JPanel(new GridLayout(11, 1));
+	private static JLabel winOrLoss;
+	private static JLabel scoreLabel;
+
+	private static final int BOARD_SIZE = WINDOW_SIZE - SPACING * 2;
+	
+	private static Color MENU_RED = new Color(0xf54248);
+
+	private static JPanel boardView = new JPanel();
 
 	public static void main(String[] args) {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setSize(new Dimension(WINDOW_SIZE - 2 * SPACING, WINDOW_SIZE));
+		window.setSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
 		window.setLocationRelativeTo(null);
-		window.getContentPane().setBackground(Color.LIGHT_GRAY);
-		window.setLayout(new BorderLayout(SPACING, SPACING));
+		window.getContentPane().setBackground(MENU_RED);
+		window.setLayout(new BorderLayout());
 
 		JLabel header = new JLabel("2048", SwingConstants.CENTER);
-		header.setPreferredSize(new Dimension(WINDOW_SIZE, SPACING));
+		header.setPreferredSize(new Dimension(WINDOW_SIZE, SPACING*2));
 		header.setFont(new Font("Courier", Font.BOLD, 30));
 		header.setOpaque(true);
-		header.setBackground(Color.LIGHT_GRAY);
-		header.setForeground(Color.BLACK);
+		header.setBackground(MENU_RED);
+		header.setForeground(Color.WHITE);
 		window.add(header, BorderLayout.PAGE_START);
-
-		theController = new Controller2048(new Board2048(4));  // to access the leaderboard in initializeLeaderboard()
-															   // before a game has started
+									
+		winOrLoss = new JLabel();
+		scoreLabel = new JLabel();
+		initializeGameOverView();
 		initializeLeaderboard();
 		initializeMenu();
+
 		runMenu();
+		
 		window.setVisible(true);
-
-		JLabel winOrLoss = new JLabel();
-		JLabel scoreLabel = new JLabel();
-		initializeGameOverView(winOrLoss, scoreLabel);
-
-		window.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-
-				GameStatus initialStatus = theController.getStatus();
-
-				if (e.getKeyCode() == 87 || e.getKeyCode() == 38)
-					theController.move(Direction.UP);
-				else if (e.getKeyCode() == 65 || e.getKeyCode() == 37)
-					theController.move(Direction.LEFT);
-				else if (e.getKeyCode() == 83 || e.getKeyCode() == 40)
-					theController.move(Direction.DOWN);
-				else if (e.getKeyCode() == 68 || e.getKeyCode() == 39)
-					theController.move(Direction.RIGHT);
-
-				System.out.println(e.getKeyCode());
-
-				updateView();
-				if (gameOver() && initialStatus==GameStatus.IN_PROGRESS){  // prevents this from executing multiple times
-					theController.saveScore(theController.getScore());
-					drawGameOverView(winOrLoss, scoreLabel);
-				}
-			}
-		});
-		window.revalidate();
 	}
 
-	private static void initializeMenu(){
+	private static void initializeMenu() {
 		JButton leaderboardButton = new JButton("View my stats");
 		JButton gameButton = new JButton("Play game");
 
 		leaderboardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("switch to leaderboard...");
+				//System.out.println("switch to leaderboard...");
 				clear();
 				drawLeaderboard();
 				window.revalidate();
 				window.repaint();
 			}
 		});
+		
 		gameButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("switch to game...");
+				//System.out.println("switch to game...");
 				clear();
 				int size = requestSize();
-				drawBoard(size);
-				window.revalidate();
-				window.repaint();
+				theController = new Controller2048(new Board2048(size));
+				Window2048 newGame = new Window2048(theController);
+				window.setVisible(false);
 			}
 		});
 
@@ -154,13 +100,13 @@ public class GUI {
 		menu.add(gameButton);
 	}
 
-	private static void runMenu(){
+	private static void runMenu() {
 		window.add(menu);
 		window.revalidate();
 		window.repaint();
 	}
-
-	private static void drawBoard(int size){
+/*
+	private static void drawBoard(int size) {
 
 		boardView.removeAll();
 		window.revalidate();
@@ -209,11 +155,11 @@ public class GUI {
 
 		updateView();
 	}
+*/
+	private static void initializeGameOverView() {
 
-	private static void initializeGameOverView(JLabel title, JLabel sc){
-
-		gameOverView.add(title);
-		gameOverView.add(sc);
+		gameOverView.add(winOrLoss);
+		gameOverView.add(scoreLabel);
 
 		JButton homeButton = new JButton("Close");
 		homeButton.addActionListener(new ActionListener() {
@@ -227,18 +173,17 @@ public class GUI {
 		gameOverView.add(homeButton);
 	}
 
-
-	private static void drawGameOverView(JLabel title, JLabel sc){
+	public static void drawGameOverView(GameStatus result, int score) {
 		/**
-		 * display win/loss message and then let the user either play again or go to the leaderboard
+		 * display win/loss message and then let the user either play again or go to the
+		 * leaderboard
 		 */
-		if (theController.getStatus()==GameStatus.LOSS){
-			title.setText("You have lost the game. Better luck next time!");
-			sc.setText("Your score was " + Integer.toString(theController.getScore()));
-		}
-		else if (theController.getStatus()==GameStatus.WIN){
-			title.setText("You won!!! :D");
-			sc.setText("Your score was " + Integer.toString(theController.getScore()));
+		if (result == GameStatus.LOSS) {
+			winOrLoss.setText("You have lost the game. Better luck next time!");
+			scoreLabel.setText("Your score was " + score);
+		} else if (result == GameStatus.WIN) {
+			winOrLoss.setText("You won!!! :D");
+			scoreLabel.setText("Your score was " + score);
 		}
 		clear();
 		window.add(gameOverView);
@@ -261,16 +206,16 @@ public class GUI {
 		return sizePicker.getValue();
 	}
 
-	private static void initializeLeaderboard(){
+	private static void initializeLeaderboard() {
 		/**
-		 * I hightly HIGHLY doubt this will update correctly when you finish a game and come back
+		 * I hightly HIGHLY doubt this will update correctly when you finish a game and
+		 * come back
 		 * 
-		 * Have an internal int[5] arr for the scores.
-		 * 	- when a game ends, refresh the leaderboard list
-		 *  - draw the page looping thru
+		 * Have an internal int[5] arr for the scores. - when a game ends, refresh the
+		 * leaderboard list - draw the page looping thru
 		 */
 		
-		for (int i=0; i<10; i++){
+		for (int i = 0; i < 5; i++) {
 			// add it to leaderboardView
 			JLabel jl = new JLabel("0", SwingConstants.CENTER);
 			leaderboardView.add(jl);
@@ -281,7 +226,7 @@ public class GUI {
 		backButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("switch back to selection menu");
+				//System.out.println("switch back to selection menu");
 				clear();
 				runMenu();
 			}
@@ -289,49 +234,35 @@ public class GUI {
 		leaderboardView.add(backButton);
 	}
 
-	private static void drawLeaderboard(){
+	private static void drawLeaderboard() {
 		boardView.setSize(new Dimension(BOARD_SIZE, BOARD_SIZE));
 		boardView.setBackground(Color.WHITE);
 		updateLeaderboard();
 		window.add(leaderboardView);
 	}
-
-	private static void updateView() {
-		/**
-		 * Updates the visible cells to contain the data stored in the model
-		 */
-		for (int i = 0; i < theController.getSize(); i++) {
-			for (int j = 0; j < theController.getSize(); j++) {
-				JLabel cell = labels[i][j];
-				String newText = Integer.toString(theController.getTileAt(i, j));
-
-				if (newText.equals("0")) {
-					cell.setText(" ");
-					cell.setBackground(Color.LIGHT_GRAY);
-				} else {
-					cell.setText(newText);
-					cell.setBackground(Color.GRAY);
-				}
-			}
-		}
+	
+	public static void show() {
+		window.setVisible(true);
 	}
 	
-	private static void updateLeaderboard(){
+	private static void updateLeaderboard() {
 		/**
-		 * I hightly HIGHLY doubt this will update correctly when you finish a game and come back
+		 * I hightly HIGHLY doubt this will update correctly when you finish a game and
+		 * come back
 		 * 
-		 * Have an internal int[5] arr for the scores.
-		 * 	- when a game ends, refresh the leaderboard list
-		 *  - draw the page looping thru
+		 * Have an internal int[5] arr for the scores. - when a game ends, refresh the
+		 * leaderboard list - draw the page looping thru
 		 */
-		if (theController == null){  // no games started yet
-			return;
+		List<Integer> lb;
+		if (theController == null) { // no games started yet
+			lb = initialLeaderboard.getScores();
 		}
-
-		List<Integer> lb = theController.getLeaderboard();
-
-		for (int i=0; i<lb.size(); i++){
-			if (i >= 10){  // only print the top 10 scores
+		else {
+			lb = theController.getLeaderboard();
+		}
+		
+		for (int i = 0; i < lb.size(); i++) {
+			if (i >= 10) { // only print the top 10 scores
 				break;
 			}
 			JLabel thisJL = leaderboardSlots[i];
@@ -340,10 +271,10 @@ public class GUI {
 		window.add(leaderboardView);
 	}
 
-	private static void clear(){
+	private static void clear() {
 		/**
-		 * Does the same thing as window.getContentPane().removeAll() but tries
-		 * to maintain the things that should by consistent (like header)
+		 * Does the same thing as window.getContentPane().removeAll() but tries to
+		 * maintain the things that should by consistent (like header)
 		 */
 		window.getContentPane().removeAll();
 		JLabel header = new JLabel("2048", SwingConstants.CENTER);
@@ -355,8 +286,8 @@ public class GUI {
 		window.add(header, BorderLayout.PAGE_START);
 	}
 
-	private static Boolean gameOver(){
-		if (theController.getStatus()==GameStatus.IN_PROGRESS){
+	private static Boolean gameOver() {
+		if (theController.getStatus() == GameStatus.IN_PROGRESS) {
 			return false;
 		}
 		return true;
