@@ -18,7 +18,6 @@ public class Board {
         grid = new int[theSize][theSize];
         empty = new ArrayList<int[]>();
         r = new Random();
-        System.out.println("Board constructor");
 
         for (int i = 0; i < theSize; i++) {
             for (int j = 0; j < theSize; j++) {

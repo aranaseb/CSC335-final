@@ -16,8 +16,6 @@ public class Controller {
          * @param theSize - The size of the grid to create for the user
          */
 
-        System.out.println("Hello");
-
         board = theBoard;
         score = 0;
 
