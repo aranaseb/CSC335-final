@@ -30,25 +30,11 @@ public class Leaderboard {
 
         Scanner file;
 
-        // Disgusting try catch block which looks for a file and creates it if it doesn't exist
-        // If anyone knows a better way to do this, it would be appreciated
         try {
             file = new Scanner(new File(filename));
         } catch (FileNotFoundException e) {
-
-            try {
-                Files.createFile(Paths.get(filename));
-            } catch (IOException ex) {
-                System.out.println("This shouldn't be able to happen...");
-                return;
-            }
-
-            try {
-                file = new Scanner(new File(filename));
-            } catch (FileNotFoundException ex) {
-                System.out.println("This shouldn't be able to happen...");
-                return;
-            }
+            System.out.println("leaderboard.txt was not found!");
+            return;
         }
 
         while (file.hasNextInt()) {
