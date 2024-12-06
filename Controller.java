@@ -28,6 +28,11 @@ public class Controller {
     }
 
     public List<Integer> getLeaderboard(){
+        /**
+         * Gets the scores in the leaderboard
+         *
+         * @returns an unmodifiable list of scores
+         */
         return leaderboard.getScores();  // Still NOT an escaping reference (it's unmodifiable)!!
     }
 
@@ -184,9 +189,7 @@ public class Controller {
 
     private void setup(){
         /**
-         * Sets up the grid for the game by initializing the first two tiles
-         * and adding the rest of the coordinates in the grid to the
-         * ArrayList of empty grid spaces.
+         * Sets up the grid for the game by initializing the first two tiles.
          */
 
         newRandomTile();
@@ -199,7 +202,6 @@ public class Controller {
          * the game board. Creates a new number on the board in
          * that given spot with a 7/10 probability of getting a
          * 2 (and 3/10 of getting a 4).
-         * Note: does NOT remove the space from 'empty' here
          *
          * @param i: the i in board.get(i, j of the empty tile to initialize
          * @param j: the j in board.get(i, j of the empty tile to initialize
@@ -374,33 +376,4 @@ public class Controller {
 
         return false;
     }
-
-//    @Override
-//    public String toString(){
-//        /**
-//         * For testing, not (at least currently) meant to be used
-//         * in the implementation of the game.
-//         *
-//         * @return: String representation of the game board ('grid')
-//         */
-//        String output = "[ ";
-//        for (int i=0; i<board.size(); i++){
-//            if (i!=0){
-//                output += "  ";
-//            }
-//            output += "[";
-//            for (int j : grid[i]){
-//                if (j==0){
-//                    output += "     ";
-//                } else{
-//                    output += String.format("%4d", j);
-//                    output += " ";
-//                }
-//            }
-//            output = output.substring(0, output.length()-1);
-//            output += "]\n";
-//        }
-//        output += " ]";
-//        return output;
-//    }
 }

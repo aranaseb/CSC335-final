@@ -37,6 +37,13 @@ public class Board {
     }
 
     public void set(int newVal, int i, int j) {
+        /**
+         * Sets the entry at (i, j) and appropriately modifies empty
+         *
+         * @param i - the i-coordinate
+         * @param j - the j-coordinate
+         * @param newVal - the value to be placed at (i, j)
+         */
         grid[i][j] = newVal;
 
         if (newVal != 0 && indexInEmpty(i, j) != -1) {
@@ -55,6 +62,9 @@ public class Board {
     }
 
     public boolean isFull() {
+        /**
+         * @return whether the board is full
+         */
         return empty.size() == 0;
     }
 
@@ -94,6 +104,9 @@ public class Board {
     }
 
     public int[] getEmptyIndex() {
+        /**
+         * @return an index that in the board that contains zero
+         */
         return empty.get(r.nextInt(empty.size()));
     }
 

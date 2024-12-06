@@ -10,11 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Provides leaderboard reading and writing functionality
- * @author Winston Reese
- */
-
 public class Leaderboard {
 
     private final List<Integer> scores;
@@ -89,6 +84,9 @@ public class Leaderboard {
     }
 
     public List<Integer> getScores(){
+        /**
+         * @return an unmodifiable list of scores
+         */
         return Collections.unmodifiableList(scores);  // NOT an escaping reference; this is safe
     }
 }
