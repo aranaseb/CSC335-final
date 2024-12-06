@@ -27,7 +27,7 @@ public class GUI {
 	private static final int WINDOW_SIZE = 900;
 
 	private static final int SPACING = 40;
-	private static JPanel menu = new JPanel(new GridLayout(11, 1)); // maybe change; I just didn't mind how GridLayout
+	private static JPanel menu = new JPanel(new GridLayout(15, 30)); // maybe change; I just didn't mind how GridLayout
 																	// (11,1) looks with this
 	private static JPanel gameOverView = new JPanel(new GridLayout(11, 1)); // 10 score + 'back' button
 	private static JLabel[] leaderboardSlots = new JLabel[10];
@@ -47,8 +47,7 @@ public class GUI {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
 		window.setLocationRelativeTo(null);
-		window.getContentPane().setBackground(MENU_RED);
-		window.setLayout(new BorderLayout());
+		window.setLayout(new BorderLayout(80, 0));
 
 		JLabel header = new JLabel("2048", SwingConstants.CENTER);
 		header.setPreferredSize(new Dimension(WINDOW_SIZE, SPACING*2));
@@ -70,9 +69,22 @@ public class GUI {
 	}
 
 	private static void initializeMenu() {
-		JButton leaderboardButton = new JButton("View my stats");
-		JButton gameButton = new JButton("Play game");
-
+		JButton gameButton = new JButton("New Game");
+		JButton leaderboardButton = new JButton("Leaderboard");
+		
+		gameButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//System.out.println("switch to game...");
+				clear();
+				int size = requestSize();
+				theController = new Controller2048(new Board2048(size));
+				Window2048 newGame = new Window2048(theController);
+				newGame.run();
+				window.setVisible(false);
+			}
+		});
+		
 		leaderboardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -83,79 +95,17 @@ public class GUI {
 				window.repaint();
 			}
 		});
-		
-		gameButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//System.out.println("switch to game...");
-				clear();
-				int size = requestSize();
-				theController = new Controller2048(new Board2048(size));
-				Window2048 newGame = new Window2048(theController);
-				window.setVisible(false);
-			}
-		});
 
-		menu.add(leaderboardButton);
 		menu.add(gameButton);
+		menu.add(leaderboardButton);
 	}
 
 	private static void runMenu() {
-		window.add(menu);
+		window.add(menu, BorderLayout.CENTER);
 		window.revalidate();
 		window.repaint();
 	}
-/*
-	private static void drawBoard(int size) {
 
-		boardView.removeAll();
-		window.revalidate();
-		window.repaint();
-
-		boardView.setSize(new Dimension(BOARD_SIZE, BOARD_SIZE));
-		boardView.setBackground(Color.WHITE);
-		window.add(boardView);
-
-		theController = new Controller2048(new Board2048(size));
-
-		boardView.setLayout(new GridLayout(size, size, SPACING / 2, SPACING / 2));
-
-		labels = new JLabel[size][size]; // Couldn't get components from the boardView, so I added this
-
-		for (int i = 0; i < theController.getSize(); i++) {
-			for (int j = 0; j < theController.getSize(); j++) {
-				JLabel cell = new JLabel(" ", SwingConstants.CENTER) {
-					@Override
-					protected void paintComponent(Graphics g) {
-						Dimension arcs = new Dimension(50, 50); // Border corners arcs {width,height}, change this to
-						// whatever you want
-						int width = getWidth();
-						int height = getHeight();
-						Graphics2D graphics = (Graphics2D) g;
-						graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-						// Draws the rounded panel with borders.
-						graphics.setColor(getBackground());
-						graphics.fillRoundRect(0, 0, width - 1, height - 1, arcs.width, arcs.height);// paint background
-
-						super.paintComponent(g); // Moved this to prevent painting over text
-					}
-				};
-
-				cell.setBackground(Color.LIGHT_GRAY);
-				cell.setOpaque(false);
-				cell.setFont(new Font("Courier", Font.BOLD, BOARD_SIZE / size / 4));
-				cell.setForeground(Color.BLACK);
-				labels[i][j] = cell;
-				boardView.add(cell);
-			}
-		}
-		window.revalidate();
-		window.repaint();
-
-		updateView();
-	}
-*/
 	private static void initializeGameOverView() {
 
 		gameOverView.add(winOrLoss);
@@ -165,7 +115,7 @@ public class GUI {
 		homeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("switch back to selection menu (after game completed)");
+				//System.out.println("switch back to selection menu (after game completed)");
 				clear();
 				runMenu();
 			}
@@ -215,7 +165,7 @@ public class GUI {
 		 * leaderboard list - draw the page looping thru
 		 */
 		
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 10; i++) {
 			// add it to leaderboardView
 			JLabel jl = new JLabel("0", SwingConstants.CENTER);
 			leaderboardView.add(jl);
@@ -284,12 +234,5 @@ public class GUI {
 		header.setBackground(Color.LIGHT_GRAY);
 		header.setForeground(Color.BLACK);
 		window.add(header, BorderLayout.PAGE_START);
-	}
-
-	private static Boolean gameOver() {
-		if (theController.getStatus() == GameStatus.IN_PROGRESS) {
-			return false;
-		}
-		return true;
 	}
 }
