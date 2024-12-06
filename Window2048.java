@@ -19,6 +19,8 @@ import javax.swing.SwingConstants;
 /*
  * GUI class for the actual game. Returns to GUI menu class
  * when finished.
+ * 
+ * @author Sebastian Arana
  */
 public class Window2048 extends JFrame {
 	private int width = 1200;
