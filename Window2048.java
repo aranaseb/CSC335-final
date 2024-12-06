@@ -114,7 +114,7 @@ public class Window2048 extends JFrame {
 			super.paintComponent(g);
 		}
 	};
-	private Controller2048 theController;
+	private Controller theController;
 
 	private JLabel[][] labels;
 
@@ -123,7 +123,7 @@ public class Window2048 extends JFrame {
 
 	private int size;
 
-	public Window2048(Controller2048 controller) {
+	public Window2048(Controller controller) {
 		setTitle("2048");
 		setSize(windowSize);
 		setResizable(false);
@@ -148,13 +148,13 @@ public class Window2048 extends JFrame {
 			public void keyPressed(KeyEvent e) {
 
 				if (e.getKeyCode() == 87 || e.getKeyCode() == 38) {
-					theController.move(Direction.UP);
+					theController.up();
 				} else if (e.getKeyCode() == 65 || e.getKeyCode() == 37) {
-					theController.move(Direction.LEFT);
+					theController.left();
 				} else if (e.getKeyCode() == 83 || e.getKeyCode() == 40) {
-					theController.move(Direction.DOWN);
+					theController.down();
 				} else if (e.getKeyCode() == 68 || e.getKeyCode() == 39) {
-					theController.move(Direction.RIGHT);
+					theController.right();
 				}
 
 				updateView();

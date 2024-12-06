@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Controller {
@@ -6,6 +7,8 @@ public class Controller {
     Board board;
     private int score;
     Random r = new Random(0);
+
+    private Leaderboard leaderboard;
 
     public Controller (Board theBoard) {
         /**
@@ -19,7 +22,22 @@ public class Controller {
         board = theBoard;
         score = 0;
 
+        leaderboard = new Leaderboard("leaderboard.txt");
+
         setup();
+    }
+
+    public List<Integer> getLeaderboard(){
+        return leaderboard.getScores();  // Still NOT an escaping reference (it's unmodifiable)!!
+    }
+
+    public void saveScore(int score) {
+        /**
+         * Adds a score to the leaderboard and updates the corresponding text file
+         * @param score - score to be saved
+         */
+        leaderboard.addScore(score);
+        leaderboard.save();
     }
 
     public int getScore() {

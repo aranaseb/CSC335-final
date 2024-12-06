@@ -27,7 +27,7 @@ import javax.swing.SwingConstants;
  * @author Julia Ryan and Sebastian Arana
  */
 public class GUI {
-	private static Controller2048 theController;
+	private static Controller theController;
 
 	private static JFrame window = new JFrame("2048 Menu");
 	private static final int WINDOW_SIZE = 900;
@@ -94,7 +94,7 @@ public class GUI {
 				clear();
 				int size = requestSize();
 
-				theController = new Controller2048(new Board2048(size));
+				theController = new Controller(new Board(size));
 
 				// STARTS A GAME WINDOW
 				Window2048 newGame = new Window2048(theController);
