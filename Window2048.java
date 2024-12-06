@@ -115,6 +115,7 @@ public class Window2048 extends JFrame {
 		}
 	};
 	private Controller theController;
+	private Leaderboard leaderboard;
 
 	private JLabel[][] labels;
 
@@ -123,7 +124,7 @@ public class Window2048 extends JFrame {
 
 	private int size;
 
-	public Window2048(Controller controller) {
+	public Window2048(Controller controller, Leaderboard leaderboard) {
 		setTitle("2048");
 		setSize(windowSize);
 		setResizable(false);
@@ -133,6 +134,7 @@ public class Window2048 extends JFrame {
 		add(background);
 
 		this.theController = controller;
+		this.leaderboard = leaderboard;
 		this.size = theController.getSize();
 	}
 
@@ -305,7 +307,9 @@ public class Window2048 extends JFrame {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			theController.saveScore(theController.getScore());
+
+			leaderboard.addScore(theController.getScore());
+			leaderboard.save();
 			setVisible(false);
 			GUI.show();
 			GUI.drawGameOverView(theController.getStatus(), theController.getScore());

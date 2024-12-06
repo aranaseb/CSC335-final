@@ -8,8 +8,6 @@ public class Controller {
     private int score;
     Random r = new Random(0);
 
-    private Leaderboard leaderboard;
-
     public Controller (Board theBoard) {
         /**
          * Creates a Board2048 model for the program. It initializes the grid, score,
@@ -22,27 +20,7 @@ public class Controller {
         board = theBoard;
         score = 0;
 
-        leaderboard = new Leaderboard("leaderboard.txt");
-
         setup();
-    }
-
-    public List<Integer> getLeaderboard(){
-        /**
-         * Gets the scores in the leaderboard
-         *
-         * @returns an unmodifiable list of scores
-         */
-        return leaderboard.getScores();  // Still NOT an escaping reference (it's unmodifiable)!!
-    }
-
-    public void saveScore(int score) {
-        /**
-         * Adds a score to the leaderboard and updates the corresponding text file
-         * @param score - score to be saved
-         */
-        leaderboard.addScore(score);
-        leaderboard.save();
     }
 
     public int getScore() {

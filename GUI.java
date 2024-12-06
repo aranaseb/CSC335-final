@@ -37,7 +37,7 @@ public class GUI {
 
 	private static JPanel gameOverView = new JPanel(new GridLayout(11, 1));
 	private static JLabel[] leaderboardSlots = new JLabel[10];
-	private static Leaderboard initialLeaderboard = new Leaderboard("leaderboard.txt");
+	private static Leaderboard leaderboard = new Leaderboard("leaderboard.txt");
 
 	private static JPanel leaderboardView = new JPanel(new GridLayout(11, 1));
 	private static JLabel winOrLoss;
@@ -97,7 +97,7 @@ public class GUI {
 				theController = new Controller(new Board(size));
 
 				// STARTS A GAME WINDOW
-				Window2048 newGame = new Window2048(theController);
+				Window2048 newGame = new Window2048(theController, leaderboard);
 				newGame.run();
 				window.setVisible(false);
 			}
@@ -243,9 +243,9 @@ public class GUI {
 	private static void updateLeaderboard() {
 		List<Integer> lb;
 		if (theController == null) {
-			lb = initialLeaderboard.getScores();
+			lb = leaderboard.getScores();
 		} else {
-			lb = theController.getLeaderboard();
+			lb = leaderboard.getScores();
 		}
 
 		for (int i = 0; i < lb.size(); i++) {
