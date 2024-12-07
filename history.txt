@@ -1,0 +1,221 @@
+commit c4c193e0d55e208831ed8b4c1592fa695d8a2e69
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Fri Dec 6 15:38:33 2024 -0700
+
+    changed leaderboard based on leaderboard.txt already existing
+
+commit 8b362adc00cae4df3fa56c228f9dbece4cb0f39a
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Fri Dec 6 15:36:11 2024 -0700
+
+    removed a dead block I forgot about
+
+commit 366ebe773800849e375a264cc649c506a90e003a
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Fri Dec 6 15:32:26 2024 -0700
+
+    separated leaderboard and controller
+
+commit 55336ea320de776a61fdf145e27c6c6f1e55bedf
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Fri Dec 6 14:54:33 2024 -0700
+
+    Updated documentation to be consistent with restructure
+
+commit 06907aa3044ba1d883b5923f3df5d64f24600fcf
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Fri Dec 6 14:24:25 2024 -0700
+
+    Changed to unit tested back-end
+
+commit b1fe579f1acb625bb4226fbd149b2d59a0c91a3f
+Author: aranaseb <166464103+aranaseb@users.noreply.github.com>
+Date:   Fri Dec 6 14:17:09 2024 -0700
+
+    Improved Game Ending
+
+commit 0ef8df7c58fe46e1e2d17ba29b61ae5a22e5c274
+Author: aranaseb <166464103+aranaseb@users.noreply.github.com>
+Date:   Fri Dec 6 13:56:01 2024 -0700
+
+    Commented, fully functional
+
+commit 11e580b457cfb3a5ed81e1d7704caf81eb2f7596
+Author: aranaseb <166464103+aranaseb@users.noreply.github.com>
+Date:   Fri Dec 6 13:36:55 2024 -0700
+
+    Fully functional GUI.
+
+commit 16c791208a3dab8a1c90f48c8bea08926ab303f0
+Author: aranaseb <166464103+aranaseb@users.noreply.github.com>
+Date:   Thu Dec 5 23:13:40 2024 -0700
+
+    Window2048 bugged on start
+
+commit 94d56c9b02ec52905c5e2f3b5c856eb3dd20fe67
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Fri Dec 6 02:05:15 2024 -0700
+
+    Added test for controller
+
+commit 5f8cd95e454c54a1699264da7941765aece2990e
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Fri Dec 6 00:54:37 2024 -0700
+
+    Added Unit tests for Board
+
+commit 040dbe3759e5226dd92434c2811fa17dffe40230
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Fri Dec 6 00:22:36 2024 -0700
+
+    Split work done between controller and board for easier testing
+
+commit 60231d82e533ecc588f21df9ba87d87db1787a14
+Author: aranaseb <166464103+aranaseb@users.noreply.github.com>
+Date:   Thu Dec 5 17:04:11 2024 -0700
+
+    Menu Panel not showing
+
+commit 18f8dd0352d675ea2e957cb0ea6f3a75d18f5445
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Thu Dec 5 12:22:35 2024 -0700
+
+    Patch for tile-generating
+
+commit b732fd77cfcc1eaa0893d10f7a725d1d1b90452b
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Wed Dec 4 20:18:40 2024 -0700
+
+    Adds Menu, Leaderboard, and Game Over pages to the GUI
+    
+    added getter for the scores (as unmodifiable list) to Leaderboard (and made it sort leaderboard in reverse order instead), added getters for the leaderboard and scores to controller (needed to display on GUI), added menu and game over pages to the GUI.
+
+commit d4f7ecbdbe8878037b293d71ff8852eda9261208
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Mon Dec 2 21:40:38 2024 -0700
+
+    Bug fixes in Board2048 and some style/javadoc improvements
+    
+    Fixed bug in game-ending logic and also fixed error that could be created from moving UDLR when: (A) there wasn't room to generate new tiles and (B) it couldn't merge in the direction of the requested move
+
+commit 58710912390e80d4d61088a60b24488caef0af6f
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Mon Dec 2 19:43:24 2024 -0700
+
+    Fixed arrow keys
+
+commit e8c3625bdad62b6530f7d1dec64b0af6e6f2b3fd
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Mon Dec 2 19:38:54 2024 -0700
+
+    Game is functional! (I think)
+
+commit 1fe37c9041e16b0d20df99af3feed7ad7b3224ed
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Fri Nov 29 20:20:08 2024 -0700
+
+    Checks when game is over (won/lost) & getter for score
+    
+    Creates enum 'GameStatus' that signifies WIN, LOSS, or IN_PROGRESS
+
+commit 51581210ef047fe4b73eff9bf3f478d26cd20338
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Tue Nov 26 22:56:43 2024 -0700
+
+    Restoring overridden changes
+
+commit 4559733373a7c1303ecad7ba34b6198d2399f464
+Author: aranaseb <166464103+aranaseb@users.noreply.github.com>
+Date:   Tue Nov 26 19:12:09 2024 -0700
+
+    GUI redesign (for more lines)
+    
+    Makes original GUI file obsolete, does not have game board implemented yet
+
+commit f203f165caec18258c073e6d58fd8ed2421cad29
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Tue Nov 26 13:11:06 2024 -0700
+
+    Implemented scoring in each game
+
+commit 1e53e826fac12c73a88f87964452e2e4ef27aca1
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Tue Nov 26 10:58:02 2024 -0700
+
+    Implements the merging of tiles (with prev commit)
+
+commit ac708d94489f6e49ba646aec985fdd7e52966bef
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Tue Nov 26 10:53:35 2024 -0700
+
+    Update Board2048.java
+
+commit 021e5e35c7a899e97ee93c6762696227720389a4
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Tue Nov 26 10:28:03 2024 -0700
+
+    Updated Board2048 to create new random tiles when there is a move
+    
+    Merging logic commented out (not finished/tested yet)
+
+commit 423124fa172d5dc4fc92ee2cf8b4c6d4e4e507db
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Mon Nov 25 19:38:55 2024 -0700
+
+    Added logic to move the tiles UDLR
+    
+    Currently has a bug in adding a new tile. Does not implement merging yet.
+
+commit d5dff2a369c3ab374d78447d4067e75e36860571
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Thu Nov 21 20:54:50 2024 -0700
+
+    Added leaderboard functionality to the controller and added some documentation
+
+commit 5ad5a3a635936e309b1aaee694d80fe28cf9378e
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Thu Nov 21 20:16:44 2024 -0700
+
+    Added a very basic leaderboard class
+
+commit 148ad06f9a235c10c36eebba54a5d75d94731a9a
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Thu Nov 21 19:51:29 2024 -0700
+
+    Changed implementations to use controller instead of board, added a few functions to make that work
+
+commit a46e4d1a19e020a01646506ecdc2b3e2e2824f44
+Author: j-ryan33 <juliaryan@arizona.edu>
+Date:   Tue Nov 19 12:03:23 2024 -0700
+
+    Added some of the skeleton of Model
+
+commit ac0abc6379c72ed5692ddc0187f79b3f143409f0
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Tue Nov 19 10:58:31 2024 -0700
+
+    Stubbed out controller class
+
+commit 84ddded7e7b5dceb30c4e8086b22c53dbecbea57
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Tue Nov 19 08:43:23 2024 -0700
+
+    Added direction enum
+
+commit 2c9f915191fef99bc4fe9dc6dac36f2fdb8a9771
+Author: HoodedLine3 <wjre12@gmail.com>
+Date:   Tue Nov 19 08:37:56 2024 -0700
+
+    Added enum to represent directional movement
+
+commit 018bda7b8046ba8f422e67c54f4e1ffcecc9e1da
+Author: aranaseb <166464103+aranaseb@users.noreply.github.com>
+Date:   Tue Nov 19 08:03:03 2024 -0700
+
+    GUI start & Model outline
+
+commit 6035a76932e533dc539c3a75e45d76e165c7b5e7
+Author: aranaseb <166464103+aranaseb@users.noreply.github.com>
+Date:   Tue Nov 12 14:18:07 2024 -0700
+
+    Initial commit
