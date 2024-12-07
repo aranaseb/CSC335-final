@@ -4,9 +4,9 @@ import java.util.Random;
 
 public class Controller {
 
-    Board board;
+    private Board board;
     private int score;
-    Random r = new Random(0);
+    private Random r = new Random(0);
 
     public Controller (Board theBoard) {
         /**
